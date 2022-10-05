@@ -1,30 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mono.CompilerServices.SymbolWriter;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private Transform cam;
+    [SerializeField] private GameObject pauseMenu;
+    public float speed = 3.0f;
     void Update()
     {
         if (Input.GetKey(GameManager.GM.Forward))
         {
-            transform.position += Vector3.up / 60;
+            transform.position += Vector3.up * (Time.deltaTime * speed);
         }
         if (Input.GetKey(GameManager.GM.Backward))
         {
-            transform.position += Vector3.down / 60;
+            transform.position += Vector3.down * (Time.deltaTime * speed);
         }
         if (Input.GetKey(GameManager.GM.Right))
         {
-            transform.position += Vector3.right / 60;
+            transform.position += Vector3.right * (Time.deltaTime * speed);
         }
         if (Input.GetKey(GameManager.GM.Left))
         {
-            transform.position += Vector3.left / 60;
+            transform.position += Vector3.left * (Time.deltaTime * speed);
         }
-        var target = transform.position;
-        target.z = -10;
-        cam.transform.position = target;
+        if (Input.GetKey(KeyCode.Escape) && !pauseMenu.activeSelf)
+        {
+            Time.timeScale = 0f;
+            pauseMenu.SetActive(true);
+        }
+        else if (Input.GetKey(KeyCode.Escape) && pauseMenu.activeSelf)
+        {
+            Time.timeScale = 1f;
+            pauseMenu.SetActive(false);
+        }
     }
 }
