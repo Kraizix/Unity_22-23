@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public KeyCode Backward { get; set;}
     public KeyCode Left { get; set;}
     public KeyCode Right { get; set;}
-    public EnemyController[] mobs;
+    // public EnemyController[] mobs;
 
     void Awake()
     {
@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        mobs = FindObjectsOfType(typeof(EnemyController)) as EnemyController[];
+        // mobs = FindObjectsOfType(typeof(EnemyController)) as EnemyController[];
         Forward = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "Z"));
         Backward = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("backwardKey", "S"));
         Left = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "Q"));
