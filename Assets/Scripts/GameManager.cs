@@ -1,26 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager GM;
+    public static GameManager gm;
     public KeyCode Forward { get; set;}
     public KeyCode Backward { get; set;}
     public KeyCode Left { get; set;}
     public KeyCode Right { get; set;}
+    public EnemyController[] mobs;
 
     void Awake()
     {
-        if (GM == null)
+        if (gm == null)
         {
             DontDestroyOnLoad(gameObject);
-            GM = this;
+            gm = this;
         }
-        else if(GM != this)
+        else if(gm != this)
         {
             Destroy(gameObject);
         }
+
+        mobs = FindObjectsOfType(typeof(EnemyController)) as EnemyController[];
         Forward = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "Z"));
         Backward = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("backwardKey", "S"));
         Left = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("leftKey", "Q"));

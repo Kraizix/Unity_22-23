@@ -1,40 +1,51 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Mono.CompilerServices.SymbolWriter;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameObject pauseMenu;
+    public float hp = 100f;
     public float speed = 3.0f;
+    public float cd = 1.0f;
+    public float damage = 10f;
+    public float range = 1f;
+    private float _cd;
     void Update()
     {
-        if (Input.GetKey(GameManager.GM.Forward))
+        if (Input.GetKey(GameManager.gm.Forward))
         {
             transform.position += Vector3.up * (Time.deltaTime * speed);
         }
-        if (Input.GetKey(GameManager.GM.Backward))
+        if (Input.GetKey(GameManager.gm.Backward))
         {
             transform.position += Vector3.down * (Time.deltaTime * speed);
         }
-        if (Input.GetKey(GameManager.GM.Right))
+        if (Input.GetKey(GameManager.gm.Right))
         {
             transform.position += Vector3.right * (Time.deltaTime * speed);
         }
-        if (Input.GetKey(GameManager.GM.Left))
+        if (Input.GetKey(GameManager.gm.Left))
         {
             transform.position += Vector3.left * (Time.deltaTime * speed);
         }
-        if (Input.GetKey(KeyCode.Escape) && !pauseMenu.activeSelf)
+
+        if (_cd <= Time.time)
         {
-            Time.timeScale = 0f;
-            pauseMenu.SetActive(true);
+            _cd = Time.time + cd;
+            Attack();
         }
-        else if (Input.GetKey(KeyCode.Escape) && pauseMenu.activeSelf)
+    }
+
+    private void Attack()
+    {
+        foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy")))
         {
-            Time.timeScale = 1f;
-            pauseMenu.SetActive(false);
+            col.GetComponent<Damageable>().TakeDamage(damage);
         }
     }
 }
