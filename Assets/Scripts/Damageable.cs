@@ -20,6 +20,10 @@ public class Damageable : MonoBehaviour
             {
                 GameManager.gm.isEnded = true;
             }
+            else
+            {
+                Instantiate(GameManager.gm.ExpOrb, transform.position, Quaternion.Euler(0,0,0));
+            }
             Destroy(gameObject);
         }
     }

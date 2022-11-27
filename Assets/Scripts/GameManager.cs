@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public KeyCode Left { get; set;}
     public KeyCode Right { get; set;}
     // public EnemyController[] mobs;
+    public GameObject ExpOrb;
     public bool isEnded;
 
     void Awake()
@@ -23,6 +24,7 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        ExpOrb = Resources.Load("Prefabs/Exp") as GameObject;
 
         // mobs = FindObjectsOfType(typeof(EnemyController)) as EnemyController[];
         Forward = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("forwardKey", "Z"));

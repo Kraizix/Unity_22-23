@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Mono.CompilerServices.SymbolWriter;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -15,6 +16,9 @@ public class PlayerController : MonoBehaviour
     public float damage = 10f;
     public float range = 1f;
     private float _cd;
+    private int _level;
+    private int _exp;
+    private int _expThreshold = 5;
     private Animator _animator;
 
     private void Start()
@@ -87,5 +91,25 @@ public class PlayerController : MonoBehaviour
         pos.x = pos.x <= -20.75f ? -20.75f : pos.x >= 20.75f ? 20.75f : pos.x;
         pos.y = pos.y <= -9.525f ? -9.525f : pos.y >= 9.525f ? 9.525f : pos.y;
         transform.position = pos;
+    }
+
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Exp"))
+        {
+            Destroy(col.gameObject);
+            _exp += 1;
+            CalculateLevel();
+        }
+    }
+
+    private void CalculateLevel()
+    {
+        if (_exp >= _expThreshold)
+        {
+            _exp -= _expThreshold;
+            _level += 1;
+            _expThreshold += 5;
+        }
     }
 }
