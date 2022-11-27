@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -49,4 +50,12 @@ public class EnemyController : MonoBehaviour
         }
         return intention.normalized;
     }*/
+
+    private void OnCollisionEnter2D(Collision2D col)
+    {
+        if (col.gameObject.CompareTag("Player"))
+        {
+            col.gameObject.GetComponent<Damageable>().TakeDamage(damage);
+        }
+    }
 }

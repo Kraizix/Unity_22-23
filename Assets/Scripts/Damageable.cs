@@ -16,6 +16,10 @@ public class Damageable : MonoBehaviour
         currentHealth -= (int)dam;
         if (currentHealth <= 0)
         {
+            if (gameObject.CompareTag("Player"))
+            {
+                GameManager.gm.isEnded = true;
+            }
             Destroy(gameObject);
         }
     }

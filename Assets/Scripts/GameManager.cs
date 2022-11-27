@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class GameManager : MonoBehaviour
     public KeyCode Left { get; set;}
     public KeyCode Right { get; set;}
     // public EnemyController[] mobs;
+    public bool isEnded;
 
     void Awake()
     {

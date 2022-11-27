@@ -7,7 +7,11 @@ public class EnemySpawner : MonoBehaviour
     private GameObject _enemy;
     private List<Vector3> _spawnPos;
     private float _nextTime;
+    [SerializeField]
     private float _cd = 2f;
+    private float _cdDecrement = 0.05f;
+    private float _timeIncrease = 60;
+    private float _spawnRateCountdown;
 
     private Camera _main;
 
@@ -29,6 +33,12 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
+        _spawnRateCountdown -= Time.deltaTime;
+        if (_spawnRateCountdown <= 0)
+        {
+            _cd -= _cdDecrement;
+            _spawnRateCountdown += _timeIncrease;
+        }
         if (_nextTime < Time.time)
         {
             _nextTime = Time.time + _cd;
@@ -38,9 +48,9 @@ public class EnemySpawner : MonoBehaviour
 
     private void SetSpawns()
     {
-        for (float i = -1; i < 2; i += 0.2f)
+        for (float i = -0.4f; i < 1.6f; i += 0.2f)
         {
-            for (float j = -1; j < 2; j += 0.2f)
+            for (float j = -0.4f; j < 1.6f; j += 0.2f)
             {
                 if (!(i is > 0 and < 1 && j is > 0 and < 1))
                 {
