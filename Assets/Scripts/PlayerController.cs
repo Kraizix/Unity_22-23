@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
             transform.position += Vector3.left * (Time.deltaTime * speed);
             _animator.SetBool("LeftKey", true);
         }
+        CheckPos();
 
         if (_animator != null)
         {
@@ -78,5 +79,13 @@ public class PlayerController : MonoBehaviour
         {
             col.GetComponent<Damageable>().TakeDamage(damage);
         }
+    }
+
+    private void CheckPos()
+    {
+        var pos = transform.position;
+        pos.x = pos.x <= -20.75f ? -20.75f : pos.x >= 20.75f ? 20.75f : pos.x;
+        pos.y = pos.y <= -9.525f ? -9.525f : pos.y >= 9.525f ? 9.525f : pos.y;
+        transform.position = pos;
     }
 }

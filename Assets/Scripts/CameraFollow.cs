@@ -20,6 +20,8 @@ public class CameraFollow : MonoBehaviour
     {
         if (!target) return;
         _targetPos = target.position + _offset;
+        _targetPos.x = _targetPos.x <= -11.585f ? -11.585f : _targetPos.x >= 11.585f ? 11.585f : _targetPos.x;
+        _targetPos.y = _targetPos.y <= -5 ? -5 : _targetPos.y >= 5 ? 5 : _targetPos.y;
         transform.position = Vector3.Lerp(transform.position, _targetPos, lerpSpeed * Time.deltaTime);
     }
 }
