@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
@@ -22,14 +23,15 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     private List<Upgrade> _upgrades = new();
     [SerializeField] private MenuManager _menu;
+    [SerializeField] private Slider slider;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
-        _upgrades.Add(new Upgrade("Speed", () =>this.PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
-        _upgrades.Add(new Upgrade("Cooldown", () =>this.PerformUpgrade(ref cd, Random.Range(-0.1f,0.2f))));
-        _upgrades.Add(new Upgrade("Range", () =>this.PerformUpgrade(ref range, Random.Range(0.2f,0.5f))));
-        _upgrades.Add(new Upgrade("Damage", () =>this.PerformUpgrade(ref damage, Random.Range(1,5))));
+        _upgrades.Add(new Upgrade("Speed", () =>PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
+        _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,0.2f))));
+        _upgrades.Add(new Upgrade("Range", () =>PerformUpgrade(ref range, Random.Range(0.2f,0.5f))));
+        _upgrades.Add(new Upgrade("Damage", () =>PerformUpgrade(ref damage, Random.Range(1,5))));
     }
 
     void Update()
@@ -118,6 +120,8 @@ public class PlayerController : MonoBehaviour
             _expThreshold += 5;
             Upgrade();
         }
+
+        slider.value = _exp / (float)_expThreshold;
     }
 
     private void Upgrade()

@@ -15,7 +15,6 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] private GameObject upgradeMenu;
 
-    private List<Upgrade> _upgrades;
     // Update is called once per frame
     void Update()
     {
@@ -46,16 +45,15 @@ public class MenuManager : MonoBehaviour
 
     public void Upgrade(List<Upgrade> upgrades)
     {
-        _upgrades = upgrades;
         upgradeMenu.SetActive(true);
         Time.timeScale = 0f;
         for (int i = 0; i < upgrades.Count; i++)
         {
-            var up = _upgrades[i];
+            var up = upgrades[i];
             _buttons[i].onClick.AddListener(delegate { up.Upgrad();
                 Time.timeScale = 1f; upgradeMenu.SetActive(false);
             });
-            _buttons[i].GetComponentInChildren<TMP_Text>().text = _upgrades[i].Name;
+            _buttons[i].GetComponentInChildren<TMP_Text>().text = upgrades[i].Name;
         }
     }
 }
