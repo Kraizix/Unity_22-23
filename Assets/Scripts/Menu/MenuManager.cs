@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenu;
 
     [SerializeField] private GameObject endMenu;
+
+    [SerializeField] private List<Button> _buttons;
+
+    [SerializeField] private GameObject upgradeMenu;
+
+    private List<Upgrade> _upgrades;
     // Update is called once per frame
     void Update()
     {
@@ -34,5 +42,20 @@ public class MenuManager : MonoBehaviour
         GameManager.gm.isEnded = false;
         Time.timeScale = 1f;
         SceneManager.LoadScene("Main");
+    }
+
+    public void Upgrade(List<Upgrade> upgrades)
+    {
+        _upgrades = upgrades;
+        upgradeMenu.SetActive(true);
+        Time.timeScale = 0f;
+        for (int i = 0; i < upgrades.Count; i++)
+        {
+            var up = _upgrades[i];
+            _buttons[i].onClick.AddListener(delegate { up.Upgrad();
+                Time.timeScale = 1f; upgradeMenu.SetActive(false);
+            });
+            _buttons[i].GetComponentInChildren<TMP_Text>().text = _upgrades[i].Name;
+        }
     }
 }

@@ -7,10 +7,10 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class PlayerController : MonoBehaviour
 {
-    public float hp = 100f;
     public float speed = 3.0f;
     public float cd = 1.0f;
     public float damage = 10f;
@@ -20,10 +20,16 @@ public class PlayerController : MonoBehaviour
     private int _exp;
     private int _expThreshold = 5;
     private Animator _animator;
+    private List<Upgrade> _upgrades = new();
+    [SerializeField] private MenuManager _menu;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _upgrades.Add(new Upgrade("Speed", () =>this.PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
+        _upgrades.Add(new Upgrade("Cooldown", () =>this.PerformUpgrade(ref cd, Random.Range(-0.1f,0.2f))));
+        _upgrades.Add(new Upgrade("Range", () =>this.PerformUpgrade(ref range, Random.Range(0.2f,0.5f))));
+        _upgrades.Add(new Upgrade("Damage", () =>this.PerformUpgrade(ref damage, Random.Range(1,5))));
     }
 
     void Update()
@@ -110,6 +116,22 @@ public class PlayerController : MonoBehaviour
             _exp -= _expThreshold;
             _level += 1;
             _expThreshold += 5;
+            Upgrade();
         }
+    }
+
+    private void Upgrade()
+    {
+        List<Upgrade> temp= new();
+        for (int i = 0; i < 2; i++)
+        {
+            temp.Add(_upgrades[Random.Range(0,_upgrades.Count)]);
+        }
+        _menu.Upgrade(temp);
+    }
+
+    private void PerformUpgrade(ref float stat, float val)
+    {
+        stat += val;
     }
 }
