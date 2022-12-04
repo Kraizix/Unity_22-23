@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using Mono.CompilerServices.SymbolWriter;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -24,12 +25,15 @@ public class PlayerController : MonoBehaviour
     private List<Upgrade> _upgrades = new();
     [SerializeField] private MenuManager _menu;
     [SerializeField] private Slider slider;
+    [SerializeField] private TMP_Text lvl;
+
+    [SerializeField] private GameObject rangeSprite;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _upgrades.Add(new Upgrade("Speed", () =>PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
-        _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,0.2f))));
+        _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,-0.2f))));
         _upgrades.Add(new Upgrade("Range", () =>PerformUpgrade(ref range, Random.Range(0.2f,0.5f))));
         _upgrades.Add(new Upgrade("Damage", () =>PerformUpgrade(ref damage, Random.Range(1,5))));
     }
@@ -118,7 +122,9 @@ public class PlayerController : MonoBehaviour
             _exp -= _expThreshold;
             _level += 1;
             _expThreshold += 5;
+            lvl.text = $"Lvl {_level}";
             Upgrade();
+            rangeSprite.transform.localScale = new Vector3(range,range, 0);
         }
 
         slider.value = _exp / (float)_expThreshold;
