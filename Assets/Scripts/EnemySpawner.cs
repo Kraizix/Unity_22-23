@@ -8,8 +8,8 @@ public class EnemySpawner : MonoBehaviour
     private List<Vector3> _spawnPos;
     private float _nextTime;
     [SerializeField]
-    private float _cd = 2.5f;
-    private  readonly float _cdDecrement = 0.05f;
+    private float _cd = 5f;
+    private  readonly float _cdDecrement = 0.1f;
     private readonly float _timeIncrease = 60;
     private float _spawnRateCountdown;
     private float _time;
@@ -27,7 +27,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Spawn()
     {
-        for (int i = 0; i < (int)_time / 120 + 1; i++)
+        for (int i = 0; i < (int)_time / 90 + 1; i++)
         {
             var basePos = _main.ViewportToWorldPoint(_spawnPos[Random.Range(0, _spawnPos.Count - 1)]);
             basePos.z = 0;

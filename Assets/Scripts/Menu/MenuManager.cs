@@ -14,6 +14,8 @@ public class MenuManager : MonoBehaviour
 
     [SerializeField] private GameObject upgradeMenu;
 
+    [SerializeField] private TMP_Text endTxt;
+
     // Update is called once per frame
     void Update()
     {
@@ -28,6 +30,13 @@ public class MenuManager : MonoBehaviour
             pauseMenu.SetActive(true);
             Time.timeScale = 0f;
         }
+
+        if (GameManager.gm.win)
+        {
+            endMenu.SetActive(true);
+            endTxt.text = "You Won !";
+            Time.timeScale = 0f;
+        }
     }
     
     public void Exit()
@@ -38,8 +47,9 @@ public class MenuManager : MonoBehaviour
     public void Replay()
     {
         GameManager.gm.isEnded = false;
+        GameManager.gm.win = false;
         Time.timeScale = 1f;
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Game");
     }
 
     public void Upgrade(List<Upgrade> upgrades)

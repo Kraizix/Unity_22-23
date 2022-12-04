@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -14,10 +15,11 @@ public class PlayerController : MonoBehaviour
     private int _level;
     private int _exp;
     private int _expThreshold = 5;
-    public float _timer;
+    private Action _attack;
+    private float _timer;
     private Animator _animator;
     private List<Upgrade> _upgrades = new();
-    private Vector3 _lastDir = Vector3.right;
+    private Vector3 _lastDir = Vector3.zero;
     [SerializeField] private MenuManager _menu;
     [SerializeField] private Slider slider;
     [SerializeField] private TMP_Text lvl;
@@ -31,10 +33,21 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        int i = Random.Range(0, 2);
+        if (i == 0)
+        {
+            _attack = Shoot;
+            cd = 1;
+        }
+        else
+        {
+            _attack = CircleAttack;
+            rangeSprite.SetActive(true);
+        }
         _bullet = Resources.Load("Prefabs/Bullet") as GameObject;
         _animator = GetComponent<Animator>();
         _upgrades.Add(new Upgrade("Speed", () =>PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
-        _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,-0.2f))));
+        _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,-0.05f))));
         _upgrades.Add(new Upgrade("Range", () =>PerformUpgrade(ref range, Random.Range(0.2f,0.5f))));
         _upgrades.Add(new Upgrade("Damage", () =>PerformUpgrade(ref damage, Random.Range(1,5))));
     }
@@ -42,6 +55,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         _timer += Time.deltaTime;
+        if (_timer / 60 >= 15)
+        {
+            GameManager.gm.win = true;
+        }
         UpdateTimer();
         if (Input.GetKey(GameManager.gm.Forward))
         {
@@ -52,19 +69,19 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(GameManager.gm.Backward))
         {
             transform.position += Vector3.down * (Time.deltaTime * speed);
-            _lastDir = Vector3.down * 180;
+            _lastDir = Vector3.down;
             _animator.SetBool(DownKey, true);
         }
         if (Input.GetKey(GameManager.gm.Right))
         {
             transform.position += Vector3.right * (Time.deltaTime * speed);
-            _lastDir = Vector3.right * 90;
+            _lastDir = Vector3.right;
             _animator.SetBool(RightKey, true);
         }
         if (Input.GetKey(GameManager.gm.Left))
         {
             transform.position += Vector3.left * (Time.deltaTime * speed);
-            _lastDir = Vector3.left * 90;
+            _lastDir = Vector3.left;
             _animator.SetBool(LeftKey, true);
         }
         CheckPos();
@@ -91,9 +108,8 @@ public class PlayerController : MonoBehaviour
 
         if (_cd <= Time.time)
         {
-            Shoot();
             _cd = Time.time + cd;
-            CircleAttack();
+            _attack();
         }
     }
 
@@ -104,13 +120,13 @@ public class PlayerController : MonoBehaviour
 
     private void Shoot()
     {
-        Instantiate(_bullet, transform.position, Quaternion.Euler(0,0, -(_lastDir.x + _lastDir.y)));
+        Instantiate(_bullet, transform.position, Quaternion.Euler(0,0, -(_lastDir.x*90 + _lastDir.y*180)));
     }
     private void CircleAttack()
     {
         foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy")))
         {
-            col.GetComponent<Damageable>().TakeDamage(damage);
+            col.GetComponent<Damageable>().TakeDamage(2*damage);
         }
     }
 

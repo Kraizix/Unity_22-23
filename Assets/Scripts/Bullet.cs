@@ -9,20 +9,13 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        _damage = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().damage;
+        _damage = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().damage * 4;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        Debug.Log("salut");
         if(col.gameObject.CompareTag("Enemy"))
             col.GetComponent<Damageable>().TakeDamage(_damage);
-    }
-    private void OnCollisionEnter2D(Collision2D col)
-    {
-        Debug.Log("salut");
-        if(col.gameObject.CompareTag("Enemy"))
-            col.gameObject.GetComponent<Damageable>().TakeDamage(_damage);
     }
 
     private void Update()

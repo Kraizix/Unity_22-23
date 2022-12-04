@@ -21,7 +21,7 @@ namespace Menu
     
         public void Play()
         {
-            SceneManager.LoadScene("Main");
+            SceneManager.LoadScene("Game");
         }
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &282794566534184522
 Transform:
   m_ObjectHideFlags: 0
@@ -345,9 +345,12 @@ MonoBehaviour:
   cd: 1
   damage: 10
   range: 1
+  _timer: 0
   _menu: {fileID: 0}
   slider: {fileID: 0}
   lvl: {fileID: 0}
+  timerTxt: {fileID: 0}
+  rangeSprite: {fileID: 0}
 --- !u!114 &2175441384769284566
 MonoBehaviour:
   m_ObjectHideFlags: 0

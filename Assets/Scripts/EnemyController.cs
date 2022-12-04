@@ -7,6 +7,8 @@ public class EnemyController : MonoBehaviour
 
     public float speed = 5f;
 
+    private float _lastHit;
+
     // public float targetDistance = 0.1f;
 
     private Rigidbody2D _rgbd;
@@ -53,9 +55,25 @@ public class EnemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.gameObject.CompareTag("Player"))
+        if (_lastHit < Time.time)
         {
-            col.gameObject.GetComponent<Damageable>().TakeDamage(damage);
+            if (col.gameObject.CompareTag("Player"))
+            {
+                col.gameObject.GetComponent<Damageable>().TakeDamage(damage);
+                _lastHit = Time.time + 2;
+            }
+        }
+    }
+
+    private void OnCollisionStay2D(Collision2D col)
+    {
+        if (_lastHit < Time.time)
+        {
+            if (col.gameObject.CompareTag("Player"))
+            {
+                col.gameObject.GetComponent<Damageable>().TakeDamage(damage);
+                _lastHit = Time.time + 2;
+            }
         }
     }
 }

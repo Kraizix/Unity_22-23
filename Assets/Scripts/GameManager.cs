@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     // public EnemyController[] mobs;
     public GameObject ExpOrb;
     public bool isEnded;
+    public bool win;
 
     void Awake()
     {
