@@ -1,13 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
-using Mono.CompilerServices.SymbolWriter;
 using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -21,16 +14,24 @@ public class PlayerController : MonoBehaviour
     private int _level;
     private int _exp;
     private int _expThreshold = 5;
+    public float _timer;
     private Animator _animator;
     private List<Upgrade> _upgrades = new();
+    private Vector3 _lastDir = Vector3.right;
     [SerializeField] private MenuManager _menu;
     [SerializeField] private Slider slider;
     [SerializeField] private TMP_Text lvl;
-
+    [SerializeField] private TMP_Text timerTxt;
     [SerializeField] private GameObject rangeSprite;
+    private static readonly int UpKey = Animator.StringToHash("UpKey");
+    private static readonly int DownKey = Animator.StringToHash("DownKey");
+    private static readonly int RightKey = Animator.StringToHash("RightKey");
+    private static readonly int LeftKey = Animator.StringToHash("LeftKey");
+    private GameObject _bullet;
 
     private void Start()
     {
+        _bullet = Resources.Load("Prefabs/Bullet") as GameObject;
         _animator = GetComponent<Animator>();
         _upgrades.Add(new Upgrade("Speed", () =>PerformUpgrade(ref speed, Random.Range(0.2f,0.5f))));
         _upgrades.Add(new Upgrade("Cooldown", () =>PerformUpgrade(ref cd, Random.Range(-0.1f,-0.2f))));
@@ -40,25 +41,31 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        _timer += Time.deltaTime;
+        UpdateTimer();
         if (Input.GetKey(GameManager.gm.Forward))
         {
             transform.position += Vector3.up * (Time.deltaTime * speed);
-            _animator.SetBool("UpKey", true);
+            _lastDir = Vector3.zero;
+            _animator.SetBool(UpKey, true);
         }
         if (Input.GetKey(GameManager.gm.Backward))
         {
             transform.position += Vector3.down * (Time.deltaTime * speed);
-            _animator.SetBool("DownKey", true);
+            _lastDir = Vector3.down * 180;
+            _animator.SetBool(DownKey, true);
         }
         if (Input.GetKey(GameManager.gm.Right))
         {
             transform.position += Vector3.right * (Time.deltaTime * speed);
-            _animator.SetBool("RightKey", true);
+            _lastDir = Vector3.right * 90;
+            _animator.SetBool(RightKey, true);
         }
         if (Input.GetKey(GameManager.gm.Left))
         {
             transform.position += Vector3.left * (Time.deltaTime * speed);
-            _animator.SetBool("LeftKey", true);
+            _lastDir = Vector3.left * 90;
+            _animator.SetBool(LeftKey, true);
         }
         CheckPos();
 
@@ -66,30 +73,40 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyUp(GameManager.gm.Forward))
             {
-                _animator.SetBool("UpKey", false);
+                _animator.SetBool(UpKey, false);
             }
             if (Input.GetKeyUp(GameManager.gm.Backward))
             {
-                _animator.SetBool("DownKey", false);
+                _animator.SetBool(DownKey, false);
             }
             if (Input.GetKeyUp(GameManager.gm.Right))
             {
-                _animator.SetBool("RightKey", false);
+                _animator.SetBool(RightKey, false);
             }
             if (Input.GetKeyUp(GameManager.gm.Left))
             {
-                _animator.SetBool("LeftKey", false);
+                _animator.SetBool(LeftKey, false);
             }
         }
 
         if (_cd <= Time.time)
         {
+            Shoot();
             _cd = Time.time + cd;
-            Attack();
+            CircleAttack();
         }
     }
 
-    private void Attack()
+    private void UpdateTimer()
+    {
+        timerTxt.text = $"{((int)_timer / 60):00}:{(int)_timer % 60:00}";
+    }
+
+    private void Shoot()
+    {
+        Instantiate(_bullet, transform.position, Quaternion.Euler(0,0, -(_lastDir.x + _lastDir.y)));
+    }
+    private void CircleAttack()
     {
         foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, range, LayerMask.GetMask("Enemy")))
         {
@@ -119,6 +136,8 @@ public class PlayerController : MonoBehaviour
     {
         if (_exp >= _expThreshold)
         {
+            var healthScript = GetComponent<Damageable>();
+            healthScript.currentHealth = healthScript.maxHealth; 
             _exp -= _expThreshold;
             _level += 1;
             _expThreshold += 5;
